@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-[#122c54]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Kits, Materiais, Medicamentos e Procedimentos do Setor (Offline)</title>
+    <!-- Inclui Tailwind CSS para estilização moderna e responsiva --><script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos personalizados */
+        :root {
+            --primary-bg: #122c54; /* Azul escuro da imagem */
+            --secondary-bg: #1c3c74; /* Um tom um pouco mais claro para cards/modal */
+            --accent-color: #00bcd4; /* Ciano/Verde-água da imagem */
+            --text-light: #e0f2f7; /* Texto claro para BG escuro */
+            --text-muted: #94b2d8; /* Texto mais suave */
+            --border-color: #2b4a7d; /* Borda para contraste */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+        }
+        .kit-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            background-color: var(--secondary-bg);
+            border-color: var(--border-color);
+        }
+        .kit-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Ajustes específicos para a paleta */
+        .text-blue-600 { color: var(--accent-color); } /* Links e botões de destaque */
+        .hover\:text-blue-700:hover { color: #00a4bd; }
+        .focus\:ring-blue-500:focus { --tw-ring-color: var(--accent-color); }
+
+        .bg-yellow-50 {
+            background-color: #2b4a7d; /* Um azul mais claro para a mensagem de erro */
+        }
+        .border-yellow-400 {
+            border-color: var(--accent-color); /* Ciano para a borda da mensagem de erro */
+        }
+        .text-yellow-800 {
+            color: var(--accent-color); /* Ciano para o texto da mensagem de erro */
+        }
+        .text-gray-600 {
+            color: var(--text-muted); /* Texto mais suave */
+        }
+        .modal-icon-container {
+            border: 2px solid var(--border-color);
+            background-color: var(--primary-bg);
+        }
+
+        /* ESTILOS DE QUANTIDADE (Círculo com Gradiente e Sombra) */
+        .circled-quantity-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #007b8b 100%); 
+            box-shadow: 0 0 8px rgba(0, 188, 212, 0.6); 
+            color: var(--primary-bg);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        
+        /* ESTILOS DE LISTA (Separação por Linha) */
+        .prose ul {
+            list-style: none; /* Remove marcadores de lista padrão */
+            padding-left: 0;
+        }
+        
+        .prose ul li {
+            display: flex;
+            align-items: center;
+            padding: 10px 0; /* Espaço vertical em torno do item */
+            border-bottom: 1px dashed var(--border-color); /* A linha separadora */
+        }
+        
+        .prose ul li:last-child {
+            border-bottom: none; /* Remove a linha do último item */
+            padding-bottom: 0;
+        }
+        
+        .prose ul li:first-child {
+            padding-top: 0; /* Remove o padding superior do primeiro item */
+        }
+
+        /* NOVO ESTILO PARA OBSERVAÇÃO/CURIOSIDADE */
+        .kit-observation {
+            background-color: #2b4a7d; /* Um tone escuro e contrastante */
+            color: #e0f2f7;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            display: block; /* Para ocupar a linha toda */
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* ESTILO PARA DESTAQUE DE GELAIDEIRA */
+        .fridge-highlight {
+            background-color: #1e40af; /* Um azul mais forte para destaque */
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-right: 8px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+
+        /* ESTILO PARA DESTAQUE PRONTO PARA USO */
+        .ready-to-use-highlight {
+            background-color: #f59e0b; /* Amarelo/Laranja para 'Pronto para Uso' */
+            color: #1c3c74;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-right: 8px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col antialiased">
+
+    <!-- Container Principal --><div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+        
+        <!-- Cabeçalho --><header class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold text-white sm:text-5xl">
+                Manual de Kits, Materiais, Medicamentos e Procedimentos
+            </h1>
+            <p class="mt-3 text-xl text-gray-300">
+                Busque informações sobre processos e materiais do setor.
+            </p>
+            
+            <!-- O botão de Dark Mode foi removido para simplificar o código e evitar erros de inicialização. -->
+        </header>
+
+        <!-- Campo de Busca --><div class="relative mb-8 max-w-2xl mx-auto">
+            <input type="text" id="searchInput" placeholder="Buscar por 'kit de punção', 'curativo de PICC', 'medicações'..."
+                   class="w-full py-3 pl-12 pr-4 text-lg border rounded-xl focus:ring-blue-500 shadow-lg bg-[#1c3c74] text-white border-[#2b4a7d] placeholder-[#94b2d8] transition duration-150 ease-in-out"
+                   oninput="filterKits(this.value)">
+            <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-[#94b2d8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+
+        <!-- Área de Resultados (Grid) --><div id="resultsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Os kits serão inseridos aqui pelo JavaScript --></div>
+
+        <!-- Mensagem de Sem Resultados --><div id="noResultsMessage" class="hidden text-center mt-16 p-8 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
+            <p class="text-xl font-semibold text-yellow-800">Nenhum resultado encontrado.</p>
+            <p class="text-gray-600">Tente refinar sua busca com termos mais gerais ou verifique a ortografia.</p>
+        </div>
+    </div>
+
+    <!-- Modal para Detalhes do Kit --><div id="kitModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                <h3 id="modalTitle" class="text-2xl font-bold text-gray-900"></h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <!-- Ícone Grande no Modal --><div id="modalIconContainer" class="mb-6 flex justify-center">
+                    <!-- Ícone será inserido aqui pelo JS -->
+                </div>
+                
+                <!-- Descrição e Procedimento --><div class="prose max-w-none text-gray-700" id="modalDescription">
+                    <!-- Conteúdo dinâmico --></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé --><footer class="mt-12 py-4 border-t border-gray-200 text-center text-sm text-gray-300">
+        <p>  | Desenvolvido para uso do Setor. | Desenvolvido por Assistente Elton Jr | Gemini  </p>
+    </footer>
+
+    <script>
+        // --- Estrutura de Dados do Manual (Offline) ---
+        // A propriedade 'image' foi substituída por 'iconName' (para mapeamento de ícones)
+        const kitsData = [
+            {
+                id: 1,
+                name: "Kit Punção Nexiva nº24 - Acesso Venoso Periférico",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.299695 - Cateter venoso periférico c/ dispositivo de segurança Nexiva amarelo 24G </li><li><span class='circled-quantity-container'>01</span> un. Cod.209858-Curativo transparente Tegaderm IV Advanced 6,5cm x 7cm</li><li><span class='circled-quantity-container'>06</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "PillBottle"
+            },
+            {
+                id: 2,
+                name: "Kit Punção Nexiva nº22 - Acesso Venoso Periférico",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.299696 - Cateter venoso periférico c/ dispositivo de segurança Nexiva azul  22G </li><li><span class='circled-quantity-container'>01</span> un. Cod.209858-Curativo transparente Tegaderm IV Advanced 6,5cm x 7cm</li><li><span class='circled-quantity-container'>06</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "PillBottle"
+            },
+            {
+                id: 3,
+                name: "Kit Punção Nexiva nº20 - Acesso Venoso Periférico",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.299698 - Cateter venoso periférico c/ dispositivo de segurança Nexiva  rosa 20G</li><li><span class='circled-quantity-container'>01</span> un. Cod.209858-Curativo transparente Tegaderm IV Advanced 6,5cm x 7cm</li><li><span class='circled-quantity-container'>06</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "PillBottle"
+            },
+            
+            // Kit 4: Punção Port-a-Cath 19mm
+            {
+                id: 4,
+                name: "Kit Punção Port a Cath - Gripper 19mm",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.45894 - Agulha p/ port-a-cath Griper Plus 20G x 19mm</li><li><span class='circled-quantity-container'>01</span> un. Cod.299314 - Antisséptico s/ corante demarcador ChloraPrep 1mL</li><li><span class='circled-quantity-container'>01</span> un. Cod.45631 - Sutura de pele Steri Strip 12mm x 100mm</li><li><span class='circled-quantity-container'>01</span> un. Cod.142484 - Luva cirúrgica de látex s/ pó Sensifree n. 7,0</li><li><span class='circled-quantity-container'>07</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 5,
+                name: "Kit Punção Port a Cath - Gripper 25mm",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.441896 - Agulha p/ port-a-cath Gripper Plus Power P.A.C. 20G x 25mm</li><li><span class='circled-quantity-container'>01</span> un. Cod.299314 - Antisséptico s/ corante demarcador ChloraPrep 1mL</li><li><span class='circled-quantity-container'>01</span> un. Cod.45631 - Sutura de pele Steri Strip 12mm x 100mm</li><li><span class='circled-quantity-container'>01</span> un. Cod.142484 - Luva cirúrgica de látex s/ pó Sensifree n. 7,0</li><li><span class='circled-quantity-container'>07</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 6,
+                name: "Kit Punção Port a Cath - Gripper 32mm",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.45896 - Agulha p/ port-a-cath Griper Plus 20G x 32mm</li><li><span class='circled-quantity-container'>01</span> un. Cod.299314 - Antisséptico s/ corante demarcador ChloraPrep 1mL</li><li><span class='circled-quantity-container'>01</span> un. Cod.45631 - Sutura de pele Steri Strip 12mm x 100mm</li><li><span class='circled-quantity-container'>01</span> un. Cod.142484 - Luva cirúrgica de látex s/ pó Sensifree n. 7,0</li><li><span class='circled-quantity-container'>07</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "PortAccess"
+            },
+            
+            // --- Kits de Salinização Port-a-Cath (3 Salinas, Sem Steri Strip) ---
+            {
+                id: 7,
+                name: "Kit Salinização Port a Cath - Gripper 19mm",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit (Salinização):</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.45894 - Agulha p/ port-a-cath Griper Plus 20G x 19mm</li><li><span class='circled-quantity-container'>01</span> un. Cod.299314 - Antisséptico s/ corante demarcador ChloraPrep 1mL</li><li><span class='circled-quantity-container'>01</span> un. Cod.142484 - Luva cirúrgica de látex s/ pó Sensifree n. 7,0</li><li><span class='circled-quantity-container'>03</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 8,
+                name: "Kit Salinização Port a Cath - Gripper 25mm",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit (Salinização):</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.441896 - Agulha p/ port-a-cath Gripper Plus Power P.A.C. 20G x 25mm</li><li><span class='circled-quantity-container'>01</span> un. Cod.299314 - Antisséptico s/ corante demarcador ChloraPrep 1mL</li><li><span class='circled-quantity-container'>01</span> un. Cod.142484 - Luva cirúrgica de látex s/ pó Sensifree n. 7,0</li><li><span class='circled-quantity-container'>03</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 9,
+                name: "Kit Salinização Port a Cath - Gripper 32mm",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit (Salinização):</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.45896 - Agulha p/ port-a-cath Griper Plus 20G x 32mm</li><li><span class='circled-quantity-container'>01</span> un. Cod.299314 - Antisséptico s/ corante demarcador ChloraPrep 1mL</li><li><span class='circled-quantity-container'>01</span> un. Cod.142484 - Luva cirúrgica de látex s/ pó Sensifree n. 7,0</li><li><span class='circled-quantity-container'>03</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0.9% Posiflush 10mL</li></ul>",
+                iconName: "PortAccess"
+            },
+            
+            <!-- --- Kits de Curativo PICC --- -->
+            {
+                id: 10,
+                name: "Kit Curativo de PICC 1 Via",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit (Curativo 1 Via):</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.299314 - Antisséptico s/ corante demarcador ChloraPrep 1mL</li><li><span class='circled-quantity-container'>01</span> un. Cod.309138 - Compressa gaze crochê hidrófila 13 fios estéril 7,5cm x 7,5cm</li><li><span class='circled-quantity-container'>01</span> un. Cod.194371 - Curativo c/ clorexidina Tegaderm CHG 8,5cm x 11,5cm</li><li><span class='circled-quantity-container'>01</span> un. Cod.136562 - Conector MicroClave</li><li><span class='circled-quantity-container'>01</span> un. Cod.193402 - Fixador p/ cateter PICC Statlock Plus</li><li><span class='circled-quantity-container'>02</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "Bandage"
+            },
+            {
+                id: 11,
+                name: "Kit Curativo de PICC 2 Vias",
+                description: "<h4><span class='font-bold text-lg'>Conteúdo do Kit (Curativo 2 Vias):</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cod.299314 - Antisséptico s/ corante demarcador ChloraPrep 1mL</li><li><span class='circled-quantity-container'>01</span> un. Cod.309138 - Compressa gaze crochê hidrófila 13 fios estéril 7,5cm x 7,5cm</li><li><span class='circled-quantity-container'>01</span> un. Cod.194371 - Curativo c/ clorexidina Tegaderm CHG 8,5cm x 11,5cm</li><li><span class='circled-quantity-container'>02</span> un. Cod.136562 - Conector MicroClave</li><li><span class='circled-quantity-container'>01</span> un. Cod.193402 - Fixador p/ cateter PICC Statlock Plus</li><li><span class='circled-quantity-container'>04</span> un. Cod.188378 - Seringa preenchida c/ solução salina 0,9% Posiflush 10mL</li></ul>",
+                iconName: "Bandage"
+            },
+
+            <!-- --- KITS DE MEDICAÇÕES IV (Padronizado SF 50mL) --- -->
+            {
+                id: 12,
+                name: "Akynzeo (Medicação Oral)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Netupitant + Palonosetron</h4><p>Apresentação: Cápsula (Uso Oral).</p><p class='mb-4'>Via de Administração: Oral.</p><h4><span class='font-bold text-lg'>Informações Importantes:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Cápsula (dispensada na caixa original).</li><li><span class='circled-quantity-container'>01</span> un. Copo c/ água (para administração).</li><li><span class='font-bold'>Observação:</span> É um antiemético combinado para prevenção de náuseas e vômitos induzidos por quimioterapia. Administrar ANTES da quimioterapia.</li></ul><span class='kit-observation'>💡 Curiosidade: Akynzeo combina dois potentes antieméticos (um bloqueador NK1 e um 5-HT3) em uma única pílula, proporcionando ação dupla e proteção prolongada contra náuseas tardias com apenas uma dose.</span>",
+                iconName: "PillBottle"
+            },
+            {
+                id: 13,
+                name: "Emend (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Aprepitanto / Fosaprepitanto</h4><p>Apresentação: Pó liofilizado (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 20mL</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: O Emend IV é, na verdade, Fosaprepitanto, uma 'pró-droga' que se transforma em Aprepitanto (o princípio ativo) no organismo, garantindo maior estabilidade e facilidade de administração venosa.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 14,
+                name: "Onicit (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Palonosetron</h4><p>Apresentação: Solução injetável (Frasco-ampola/Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV - Push).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Tampa vedante</li></ul><span class='kit-observation'>💡 Curiosidade: O Palonosetron (Onicit) é conhecido por sua meia-vida prolongada (cerca de 40 horas), sendo altamente eficaz na prevenção de náuseas e vômitos tardios. É administrado por injeção direta (Push) e não necessita de diluição em bolsa de 50mL.</span>",
+                iconName: "Syringe"
+            },
+            {
+                id: 15,
+                name: "Atropina (Atropharma) (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Sulfato de Atropina</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV - Push).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa de 3mL</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Tampa vedante</li></ul><span class='kit-observation'>💡 Curiosidade: Embora seja famosa por tratar emergências cardíacas (bradicardia), a Atropina é crucial na oncologia para reverter efeitos colinérgicos (como diarreia ou sudorese intensa) causados por alguns quimioterápicos.</span>",
+                iconName: "Syringe"
+            },
+            {
+                id: 16,
+                name: "Ferinject 500mg (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Carboximaltose Férrica</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL</li></ul><span class='kit-observation'>💡 Curiosidade: O Ferinject 500mg é diluído no volume padrão de 50mL de SF, permitindo a reposição de ferro em uma única sessão de forma segura.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 17,
+                name: "Ferinject 1000mg (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Carboximaltose Férrica</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 20mL</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 250mL (para diluição/infusão)</li></ul><span class='kit-observation'>⚠️ Exceção: A maior dosagem (1000mg) exige diluição em 250mL de SF, sendo uma exceção ao padrão de 50mL, para garantir a segurança e tolerância do paciente.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 18,
+                name: "Noripurum 100mg (Ferropurum) (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Sacarato Férrico</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: Noripurum é um complexo de sacarose e hidróxido férrico, desenvolvido para ser menos propenso a reações alérgicas que formas mais antigas de ferro IV.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 19,
+                name: "Noripurum 200mg (Ferropurum) (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Sacarato Férrico</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 250mL (para diluição/infusão)</li></ul><span class='kit-observation'>⚠️ Exceção: Doses acima de 200mg de Noripurum são diluídas em 250mL de SF, o que difere do padrão de 50mL, para assegurar que a taxa de infusão permaneça lenta e minimize riscos de reações adversas.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 20,
+                name: "Decadron (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Dexametasona</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 3mL</li><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: Além de ser um potente anti-inflamatório, a Dexametasona (Decadron) é um dos antieméticos mais antigos e eficazes, atuando por um mecanismo diferente dos outros para potencializar o efeito contra vômitos induzidos pela quimioterapia.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 21,
+                name: "Ansetron (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Ondansetrona</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 5mL</li><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: A Ondansetrona (Ansetron), conhecida pela marca Zofran, foi um dos primeiros e mais eficazes antagonistas 5-HT3, sendo o \"padrão-ouro\" para náuseas e vômitos agudos pós-quimioterapia.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 22,
+                name: "Kytril (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Granisetrona</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 3mL</li><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: O Kytril (Granisetrona) é conhecido por ser altamente seletivo, tendo menos probabilidade de causar interações medicamentosas ou efeitos colaterais relacionados ao coração em comparação com outros 5-HT3 antagonistas.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 23,
+                name: "Kit Medicação Combinada (Decadron + Ansetron / Kytril)",
+                description: "<h4><span class='font-bold text-lg'>Compatibilidade:</span> Decadron + Ansetron (Ondansetrona) OU Decadron + Kytril (Granisetrona)</h4><p>Instrução: Quando prescritas juntas, essas medicações DEVEM ser preparadas na mesma bolsa de SF para administração conjunta.</p><p class='mb-4'>Via de Administração: Intravenosa (IV) em conjunto.</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>02</span> un. Agulha de aspiração ponta romba (para 2 ampolas)</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 5mL (para aspiração de ambas as medicações, cobrindo o volume máximo necessário)</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: Usar medicações de classes diferentes, como um corticosteroide (Decadron) e um antagonista 5-HT3 (Ondansetrona/Granisetrona), é a estratégia mais eficaz, pois bloqueia múltiplos caminhos neurais que desencadeiam o vômito.</span>",
+                iconName: "BloodBag"
+            },
+            {
+                id: 24,
+                name: "Bromoprida (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Bromoprida</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: A Bromoprida, um procinético, é frequentemente utilizada para acelerar o esvaziamento gástrico, útil para pacientes com náuseas e empachamento. É administrada por infusão lenta para evitar reações extrapiramidais.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 25,
+                name: "Buscopan (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Hioscina (Butilbrometo)</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: O Butilbrometo de Hioscina atua relaxando a musculatura lisa do trato gastrointestinal, sendo eficaz para alívio de cólicas e espasmos abdominais.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 26,
+                name: "Buscopan Composto (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Hioscina + Dipirona</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 5mL</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: A combinação de Hioscina (antiespasmódico) e Dipirona (analgésico) fornece alívio duplo, tratando tanto a dor quanto a causa do espasmo.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 27,
+                name: "Citoneurin (Kit Preparo IM)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Vitaminas B1, B6 e B12 (Complexo B)</h4><p>Apresentação: Solução injetável (Ampola dupla).</p><p class='mb-4'>Via de Administração: Intramuscular (IM).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa de 3mL (para aspiração e administração)</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Agulha 30x07 (para administração IM)</li></ul><span class='kit-observation'>💡 Curiosidade: O Citoneurin é essencial para a saúde nervosa. Em pacientes oncológicos, é frequentemente usado para prevenir ou tratar a neuropatia periférica induzida por certos quimioterápicos.</span>",
+                iconName: "Syringe"
+            },
+            {
+                id: 28,
+                name: "Cortisonal 100mg (Hidrocortisona) (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Hidrocortisona (Hemissuccinato de Hidrocortisona)</h4><p>Apresentação: Pó liofilizado (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Curiosidade: A Hidrocortisona é um corticoide de ação rápida, fundamental em situações de hipersensibilidade ou como terapia de suporte para condições como insuficiência adrenal.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 29,
+                name: "Metoclopramida (Noprosil) (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Cloridrato de Metoclopramida</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>⚠️ Atenção: A Metoclopramida deve ser administrada lentamente (geralmente em 15 minutos se em SF 50mL) para evitar sonolência ou reações extrapiramidais agudas.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 30,
+                name: "Omeprazol (Kit Preparo IV - Push)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Omeprazol</h4><p>Apresentação: Pó liofilizado (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV - Injeção Lenta).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL (para reconstituição e aspiração)</li><li><span class='circled-quantity-container'>01</span> un. Tampa Vedante</li></ul><span class='kit-observation'>💡 Curiosidade: O Omeprazol (Injetável) é reconstituído com o diluente do próprio frasco ou com 10mL de SF e administrado por injeção IV lenta (push) em 2 a 5 minutos. Não necessita de bolsa de 50mL de SF.</span>",
+                iconName: "Syringe"
+            },
+            {
+                id: 31,
+                name: "Pantoprazol (Kit Preparo IV - Push)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Pantoprazol Sódico Sesqui-hidratado</h4><p>Apresentação: Pó liofilizado (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV - Injeção Lenta).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL (para reconstituição e aspiração)</li><li><span class='circled-quantity-container'>01</span> un. Tampa Vedante</li></ul><span class='kit-observation'>💡 Curiosidade: Semelhante ao Omeprazol, o Pantoprazol Injetável é reconstituído e administrado por injeção IV direta e lenta, sendo um protetor gástrico fundamental para pacientes em quimioterapia.</span>",
+                iconName: "Syringe"
+            },
+            
+            <!-- NOVOS KITS (Medicações Refrigeradas e IV/IM) -->
+            {
+                id: 32,
+                name: "Alfaepoetina 10.000 UI/1mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Alfaepoetina</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 10.000 UI/1mL.</li><li><span class='font-bold'>Observação:</span> A agulha SC já acompanha a seringa. Aplicar logo após retirar da geladeira.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 33,
+                name: "Actemra 162mg/0,9mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Tocilizumabe</h4><p>Apresentação: Solução injetável (Seringa preenchida/Caneta).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa/Caneta de 162mg/0,9mL.</li><li><span class='font-bold'>Observação:</span> Deixar atingir a temperatura ambiente antes da aplicação.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 34,
+                name: "Alfaepoetina 4.000 UI/1mL (Frasco) (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Alfaepoetina</h4><p>Apresentação: Solução injetável (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa de 1mL (Insulina) ou 3mL.</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba.</li><li><span class='circled-quantity-container'>01</span> un. Agulha SC (Ex: Agulha 13x4,5).</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 35,
+                name: "Aranesp 500mcg/1mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Darbepoetina Alfa</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 500mcg/1mL.</li><li><span class='font-bold'>Observação:</span> A agulha SC já acompanha a seringa.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 36,
+                name: "Cimzia 200mg/mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Certolizumabe Pegol</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 200mg/mL.</li><li><span class='font-bold'>Observação:</span> A agulha SC já acompanha a seringa.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 37,
+                name: "Cosentyx 150 mg/mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Secuquinumabe</h4><p>Apresentação: Solução injetável (Seringa preenchida/Caneta).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa/Caneta de 150mg/mL.</li><li><span class='font-bold'>Observação:</span> A agulha SC já acompanha o dispositivo.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 38,
+                name: "Cubicin 500mg Inj (Kit Preparo IV)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Daptomicina</h4><p>Apresentação: Pó liofilizado (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL (para diluição)</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 10mL (para cada frasco - diluente)</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 100mL (para infusão)</li></ul><span class='kit-observation'>💡 Observação: A Daptomicina é reconstituída com 10mL de SF e subsequentemente diluída em 100mL de SF para infusão lenta.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 39,
+                name: "Eligard 22,5mg Inj (pronta para dispensação)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Acetato de Leuprolida</h4><p>Apresentação: Liofilizado e solvente (Preparação de suspensão).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Kit completo de preparação (agulhas, seringas, diluente - segue o kit original do Eligard).</li><li><span class='font-bold'>Observação:</span> Preparo complexo, deve ser realizado conforme instruções do fabricante (mistura de pó com solvente imediatamente antes da administração).</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 40,
+                name: "Eligard 45mg Inj (pronta para dispensação)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Acetato de Leuprolida</h4><p>Apresentação: Liofilizado e solvente (Preparação de suspensão).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Kit completo de preparação (agulhas, seringas, diluente - segue o kit original do Eligard).</li><li><span class='font-bold'>Observação:</span> Preparo complexo, deve ser realizado conforme instruções do fabricante (mistura de pó com solvente imediatamente antes da administração).</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 41,
+                name: "Eprex 4.000 UI (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Alfaepoetina</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 4.000 UI.</li><li><span class='font-bold'>Observação:</span> A agulha SC já acompanha a seringa. Não agitar.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 42,
+                name: "Eprex 40.000 UI (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Alfaepoetina</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 40.000 UI.</li><li><span class='font-bold'>Observação:</span> A agulha SC já acompanha a seringa. Não agitar.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 43,
+                name: "Exfuno 500mg Inj (Kit Preparo IV)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Daptomicina</h4><p>Apresentação: Pó liofilizado (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL (para diluição)</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 10mL (para cada frasco - diluente)</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 100mL (para infusão)</li></ul><span class='kit-observation'>💡 Observação: A Daptomicina é reconstituída com 10mL de SF e subsequentemente diluída em 100mL de SF para infusão lenta.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 44,
+                name: "Faslodex 250mg/5mL",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Fulvestranto</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Intramuscular (IM) Lenta (Glútea).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 250mg/5mL.</li><li><span class='circled-quantity-container'>01</span> un. Agulha de administração IM (geralmente 40x12).</li><li><span class='font-bold'>Observação:</span> Aplicação de grande volume (5mL), devendo ser administrada lentamente na região glútea.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 45,
+                name: "Fasturtec 1,5mg Inj (Kit Preparo IV)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Rasburicase</h4><p>Apresentação: Pó liofilizado e diluente (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL (para aspiração)</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Atenção: A Rasburicase (Fasturtec) é usada para tratar a Síndrome de Lise Tumoral (SLT) e tem um preparo específico.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 46,
+                name: "Granulokine 300mcg/0,5mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Filgrastim</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 300mcg/0,5mL.</li><li><span class='font-bold'>Observação:</span> A agulha SC já acompanha a seringa. Não agitar.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 47,
+                name: "Humira AC 40mg/0,4mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Adalimumabe</h4><p>Apresentação: Solução injetável (Caneta/Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Caneta/Seringa Preenchida de 40mg/0,4mL.</li><li><span class='font-bold'>Observação:</span> Deixar atingir a temperatura ambiente antes da aplicação.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 48,
+                name: "Hyrimoz 40mg/0,8mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Adalimumabe (Biológico)</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 40mg/0,8mL.</li><li><span class='font-bold'>Observação:</span> Deixar atingir a temperatura ambiente antes da aplicação.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 49,
+                name: "Invanz 1g Inj (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Ertapenem</h4><p>Apresentação: Pó liofilizado (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa de 10mL (para aspiração)</li><li><span class='circled-quantity-container'>01</span> un. Água Destilada 10mL (para cada frasco - diluente)</li><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 100mL (para infusão)</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li></ul><span class='kit-observation'>💡 Observação: Reconstituir com ÁGUA DESTILADA (10mL). Diluir em 100mL de SF para infusão.</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 50,
+                name: "NPlate 250mcg/0,5mL Inj (Kit Preparo SC)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Romiplostim</h4><p>Apresentação: Pó liofilizado (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa de 3mL (para reconstituição/aspiração)</li><li><span class='circled-quantity-container'>01</span> un. Água Destilada 10mL (para cada frasco - diluente)</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Agulha Subcutânea (SC) (para administração)</li></ul><span class='kit-observation'>💡 Atenção: Reconstituir com ÁGUA DESTILADA. Necessita de cálculo de dose.</span>",
+                iconName: "Syringe"
+            },
+            {
+                id: 51,
+                name: "Neulastim 6mg/0,6mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Pegfilgrastim</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 6mg/0,6mL.</li><li><span class='font-bold'>Observação:</span> Pegfilgrastim é de longa ação (dose única por ciclo). Não agitar.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 52,
+                name: "Neulastim OBI 6mg/0,6mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Pegfilgrastim (On-Body Injector)</h4><p>Apresentação: Solução injetável (Dispositivo aplicador).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Neulastim On-Body Injector (OBI) de 6mg/0,6mL.</li><li><span class='font-bold'>Observação:</span> Dispositivo de aplicação automática (patch) que libera a dose no dia seguinte à quimioterapia.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 53,
+                name: "Nucala 100mg/mL (Caneta) (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Mepolizumabe</h4><p>Apresentação: Solução injetável (Caneta/Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Caneta de 100mg/mL.</li><li><span class='font-bold'>Observação:</span> A agulha SC já acompanha o dispositivo.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 54,
+                name: "Poemmy 50mg/mL Inj (Kit Preparo IM)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Cloridrato de Melfalano</h4><p>Apresentação: Solução injetável.</p><p class='mb-4'>Via de Administração: Intramuscular (IM) ou Intravenosa (IV, se diluído).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa de 3mL (para aspiração).</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba.</li><li><span class='circled-quantity-container'>01</span> un. Agulha 30x07 (para administração IM).</li></ul><span class='kit-observation'>⚠️ Atenção: Consultar prescrição para via IM ou IV. Se for IV, necessita de diluição extra.</span>",
+                iconName: "Syringe"
+            },
+            {
+                id: 55,
+                name: "Prolia 60mg Inj (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Denosumabe</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 60mg.</li><li><span class='font-bold'>Observação:</span> A agulha SC já acompanha a seringa.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 56,
+                name: "Sandostatin LAR 20mg Inj (Kit Preparo IM)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Octreotida (Liberação Prolongada)</h4><p>Apresentação: Pó e solvente (Preparação de suspensão).</p><p class='mb-4'>Via de Administração: Intramuscular (IM) Profunda.</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Kit completo de preparação (agulhas, seringa especial, diluente - segue o kit original).</li><li><span class='font-bold'>Observação:</span> Preparo complexo. Deve ser injetado imediatamente após a suspensão para evitar sedimentação.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 57,
+                name: "Sandostatin LAR 30mg Inj (Kit Preparo IM)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Octreotida (Liberação Prolongada)</h4><p>Apresentação: Pó e solvente (Preparação de suspensão).</p><p class='mb-4'>Via de Administração: Intramuscular (IM) Profunda.</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Kit completo de preparação (agulhas, seringa especial, diluente - segue o kit original).</li><li><span class='font-bold'>Observação:</span> Preparo complexo. Deve ser injetado imediatamente após a suspensão para evitar sedimentação.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 58,
+                name: "Simponi 50mg/0,5mL (Caneta) (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Golimumabe</h4><p>Apresentação: Solução injetável (Caneta/Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Caneta de 50mg/0,5mL.</li><li><span class='font-bold'>Observação:</span> Deixar atingir a temperatura ambiente antes da aplicação.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 59,
+                name: "Somatuline Autogel 120mg/0,5mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Lanreotida (Autogel)</h4><p>Apresentação: Solução injetável viscosa (Seringa preenchida com sistema de injeção).</p><p class='mb-4'>Via de Administração: Subcutânea (SC) Profunda (Glútea/Coxa Superior).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 120mg/0,5mL.</li><li><span class='font-bold'>Observação:</span> Acompanha sistema de injeção automático. Aplicar na parte superior externa da coxa ou quadrante superior externo da nádega.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 60,
+                name: "Xgeva 120mg Inj (Kit Preparo SC)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Denosumabe</h4><p>Apresentação: Solução injetável (Frasco-ampola).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa de 3mL (para aspiração)</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Agulha Subcutânea (SC) (para administração)</li></ul><span class='kit-observation'>💡 Observação: Xgeva é de uso SC e não requer diluição; é aspirado diretamente do frasco. Deixar atingir a temperatura ambiente antes da aplicação.</span>",
+                iconName: "Syringe"
+            },
+            {
+                id: 61,
+                name: "Xolair 150mg/mL (Seringa) (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Omalizumabe</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 150mg/mL.</li><li><span class='font-bold'>Observação:</span> Deixar atingir a temperatura ambiente antes da aplicação.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 62,
+                name: "Zolibbs 4mg/5mL Inj (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Ácido Zoledrônico</h4><p>Apresentação: Solução injetável (Frasco).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa de 5mL (para aspiração)</li><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 100mL (para diluição/infusão)</li></ul><span class='kit-observation'>💡 Observação: Aspira-se o volume necessário e dilui-se em 100mL de SF para infusão (geralmente por 15 minutos).</span>",
+                iconName: "PortAccess"
+            },
+            {
+                id: 63,
+                name: "Zarzio 30MU/0,5mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Filgrastim (Biológico)</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 30MU/0,5mL.</li><li><span class='font-bold'>Observação:</span> Deixar atingir a temperatura ambiente antes da aplicação. Não agitar.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 64,
+                name: "Zoladex 3,6mg Inj (Kit Preparo SC)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Gosserrelina (Implante)</h4><p>Apresentação: Implante em aplicador pré-carregado.</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Aplicador/Seringa de 3,6mg.</li><li><span class='font-bold'>Observação:</span> Não requer preparo de diluição. Pronto para uso no aplicador. Administrar conforme técnica SC.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 65,
+                name: "Zoladex LA 10,8mg Inj (Kit Preparo SC)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Gosserrelina (Implante)</h4><p>Apresentação: Implante em aplicador pré-carregado.</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Aplicador/Seringa de 10,8mg (Liberação Prolongada).</li><li><span class='font-bold'>Observação:</span> Não requer preparo de diluição. Pronto para uso no aplicador. Administrar conforme técnica SC.</li></ul>",
+                iconName: "Syringe"
+            },
+            {
+                id: 66,
+                name: "Ziextenzo 6mg/0,6mL (PRONTA USO)",
+                description: "<span class='fridge-highlight'>FICA NA GELADEIRA</span><span class='ready-to-use-highlight'>PRONTA PARA USO</span><h4><span class='font-bold text-lg'>Princípio Ativo:</span> Pegfilgrastim (Biológico)</h4><p>Apresentação: Solução injetável (Seringa preenchida).</p><p class='mb-4'>Via de Administração: Subcutânea (SC).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Seringa Preenchida de 6mg/0,6mL.</li><li><span class='font-bold'>Observação:</span> Pegfilgrastim é de longa ação (dose única por ciclo). Não agitar.</li></ul>",
+                iconName: "Syringe"
+            },
+	    {
+                id: 67,
+                name: "Difenidrin - Difenidramina (Kit Preparo IV)",
+                description: "<h4><span class='font-bold text-lg'>Princípio Ativo:</span> Difenidramina</h4><p>Apresentação: Solução injetável (Ampola).</p><p class='mb-4'>Via de Administração: Intravenosa (IV).</p><h4><span class='font-bold text-lg'>Conteúdo do Kit de Preparo:</span></h4><ul class='pl-0 mt-2'><li><span class='circled-quantity-container'>01</span> un. Agulha de aspiração ponta romba</li><li><span class='circled-quantity-container'>01</span> un. Seringa de 3mL</li><li><span class='circled-quantity-container'>01</span> un. Equipo de infusão simples</li><li><span class='circled-quantity-container'>01</span> un. Soro Fisiológico (SF) 0,9% - 50mL (para diluição/infusão)</li></ul>",
+                iconName: "PortAccess"
+            },
+        ];
+
+        // Mapeamento de nomes de ícones para caminhos SVG simples (Lucide-like)
+        function getIconSvg(iconName, classes) {
+            let path = "";
+            let size = "24";
+
+            switch (iconName) {
+                case "PillBottle":
+                    // Acesso Periférico / Medicação Oral - Ícone mais simples e robusto (Cápsula)
+                    path = "M12 2v2M12 21v-3M12 6a4 4 0 0 1 4 4v4a4 4 0 0 1-4 4 4 4 0 0 1-4-4v-4a4 4 0 0 1 4-4zM8 12h8M6 12h-2M18 12h2";
+                    size = "24";
+                    break;
+                case "PortAccess":
+                    // Acesso Central (Port-a-Cath) / Medicação IV (Infusão)
+                    path = "M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z M8 12h8 M12 8v8"; // Círculo com Cruz (Port)
+                    size = "24";
+                    break;
+                case "Syringe":
+                    // Seringa (Injeção IM/IV Push/SC)
+                    path = "M11 20L19 12M18 10l-1-1M15 13L12 10l-4 4 3 3 3-3zM10 18l-3 3M20 7l-2-2M13 14L10 11";
+                    size = "24";
+                    break;
+                case "Bandage":
+                    // Curativo / Band-Aid
+                    path = "M17.7 2.3c-.6-.6-1.5-.6-2.1 0l-12 12c-.6.6-.6 1.5 0 2.1l6.9 6.9c.6.6 1.5.6 2.1 0l12-12c.6-.6.6-1.5 0-2.1l-6.9-6.9zM15 12h-6v-6h6v6z";
+                    size = "24";
+                    break;
+                case "BloodBag":
+                    // Bolsa de Medicação (Combinação)
+                    path = "M12 21.5L6 15V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v11zM12 21v-4M8 17h8";
+                    size = "24";
+                    break;
+                case "Thermometer":
+                    // Glicemia (Termômetro/Medição - mantido como placeholder caso precise)
+                    path = "M10.8 19c-1.8 0-3.2-1.4-3.2-3.2 0-2.6 3.2-6.8 3.2-6.8s3.2 4.2 3.2 6.8c0 1.8-1.4 3.2-3.2 3.2z M10.8 16.8v-2.4 M14 19H8 M10.8 12V4";
+                    size = "24";
+                    break;
+                default:
+                    path = "M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"; // Círculo de fallback
+            }
+
+            return `<svg class="${classes}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" width="${size}" height="${size}">
+                        <path d="${path}"/>
+                    </svg>`;
+        }
+
+
+        const resultsContainer = document.getElementById('resultsContainer');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const modalIconContainer = document.getElementById('modalIconContainer');
+
+
+        // Função para renderizar um único cartão (card) de kit
+        function createKitCard(kit) {
+            const card = document.createElement('div');
+            card.className = 'kit-card rounded-xl shadow-lg border overflow-hidden';
+            card.setAttribute('onclick', `openModal(${kit.id})`);
+            
+            // Renderiza o ícone no card
+            const iconSvg = getIconSvg(kit.iconName, "w-16 h-16 text-blue-600");
+
+            // Verifica se deve adicionar os destaques de geladeira e pronto para uso
+            let highlights = '';
+            if (kit.description.includes('FICA NA GELADEIRA')) {
+                highlights += `<span class="fridge-highlight">Geladeira</span>`;
+            }
+            if (kit.description.includes('PRONTA PARA USO')) {
+                highlights += `<span class="ready-to-use-highlight">Pronta Uso</span>`;
+            }
+
+
+            card.innerHTML = `
+                <div class="flex justify-center items-center h-48 bg-transparent p-6">
+                    ${iconSvg}
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-white mb-2">${kit.name}</h3>
+                    <div class="mb-2">${highlights}</div>
+                    <p class="text-gray-300 text-sm line-clamp-3">${kit.description.replace(/<[^>]+>/g, '').substring(0, 100)}...</p>
+                    <button class="mt-4 text-sm font-medium text-blue-600 hover:text-blue-700">
+                        Ver Detalhes →
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        // Função principal de busca e filtragem
+        function filterKits(searchTerm) {
+            const lowerCaseSearch = searchTerm.toLowerCase().trim();
+            resultsContainer.innerHTML = '';
+            
+            const filteredKits = kitsData.filter(kit => 
+                kit.name.toLowerCase().includes(lowerCaseSearch) || 
+                kit.description.toLowerCase().includes(lowerCaseSearch)
+            );
+
+            if (filteredKits.length > 0) {
+                filteredKits.forEach(kit => {
+                    resultsContainer.appendChild(createKitCard(kit));
+                });
+                noResultsMessage.classList.add('hidden');
+            } else {
+                noResultsMessage.classList.remove('hidden');
+            }
+        }
+
+        // --- Funções do Modal ---
+
+        const kitModal = document.getElementById('kitModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        // modalImage removido
+
+        function openModal(kitId) {
+            const kit = kitsData.find(k => k.id === kitId);
+            
+            if (kit) {
+                modalTitle.textContent = kit.name;
+                modalDescription.innerHTML = kit.description;
+                
+                // Renderiza o ícone grande no modal
+                const modalIconSvg = getIconSvg(kit.iconName, "w-24 h-24 text-blue-600");
+                modalIconContainer.innerHTML = `<div class="p-4 rounded-full modal-icon-container">${modalIconSvg}</div>`;
+
+
+                // Estilização do modalContent para usar a paleta
+                modalContent.style.backgroundColor = 'var(--secondary-bg)';
+                modalContent.style.borderColor = 'var(--border-color)';
+
+                modalTitle.style.color = 'var(--text-light)';
+
+                modalDescription.style.color = 'var(--text-muted)';
+                
+                // Ajustes para os links e negritos dentro da descrição
+                modalDescription.querySelectorAll('h4').forEach(h4 => h4.style.color = 'var(--text-light)');
+                
+                // Aplica estilos de lista e garante cor correta do texto
+                modalDescription.querySelectorAll('li').forEach(li => {
+                    li.style.color = 'var(--text-muted)';
+                    // Garante que o código do item (Cod.xxxxx) fique destacado em cor mais clara
+                    li.innerHTML = li.innerHTML.replace(/(Cod\.[^<]+)/g, `<span style="color:var(--text-light)">$1</span>`);
+                });
+                modalDescription.querySelectorAll('p').forEach(p => p.style.color = 'var(--text-muted)');
+                modalDescription.querySelectorAll('.font-bold').forEach(el => el.style.color = 'var(--text-light)');
+                
+                // Aplica estilos de destaque de geladeira e pronto para uso dentro do modal
+                modalDescription.querySelectorAll('.fridge-highlight').forEach(el => { el.style.backgroundColor = '#1e40af'; el.style.color = 'white'; });
+                modalDescription.querySelectorAll('.ready-to-use-highlight').forEach(el => { el.style.backgroundColor = '#f59e0b'; el.style.color = '#1c3c74'; });
+
+
+                // Exibe o modal
+                kitModal.classList.remove('hidden');
+                kitModal.classList.add('flex');
+                
+                // Animação de entrada
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            }
+        }
+
+        function closeModal() {
+            // Animação de saída
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                kitModal.classList.add('hidden');
+                kitModal.classList.remove('flex');
+            }, 300); // Tempo correspondente à transição CSS
+        }
+
+        // Fecha o modal ao clicar fora dele
+        kitModal.addEventListener('click', (e) => {
+            if (e.target === kitModal) {
+                closeModal();
+            }
+        });
+
+        // Fecha o modal ao apertar ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !kitModal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // Chamada inicial para carregar todos os kits
+        window.onload = function() {
+            filterKits('');
+        }
+
+    </script>
+</body>
+</html>
