@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-[#122c54]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculos Setoriais - Farmácia Oncológica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #122c54;
+            --secondary-bg: #1c3c74;
+            --accent-color: #00bcd4;
+            --text-light: #e0f2f7;
+            --text-muted: #94b2d8;
+            --border-color: #2b4a7d;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .calc-card {
+            background-color: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .calc-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+        .input-field {
+            background: #0f2544;
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus { border-color: var(--accent-color); }
+        
+        .result-box {
+            background: rgba(0, 188, 212, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .gender-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            background: #0f2544;
+            color: var(--text-muted);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .gender-btn.active {
+            background: var(--accent-color);
+            color: var(--primary-bg);
+            border-color: var(--accent-color);
+        }
+
+        .formula-display {
+            background: #0a192f;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--accent-color);
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="bg-primary-bg/80 backdrop-blur-md sticky top-0 z-10 border-b border-border-color p-4 shadow-xl">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-2xl font-bold text-white">
+                   <strong>Kits</strong>
+                </a>
+            </div>
+            <span class="text-[10px] uppercase tracking-widest text-accent-color font-bold bg-accent-color/10 px-2 py-1 rounded">Setor de Oncologia</span>
+        </div>
+    </header>
+
+    <main class="flex-grow p-6 max-w-6xl mx-auto w-full">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mt-4">
+            
+            <!-- Card Carboplatina -->
+            <div onclick="openModal('carbo')" class="calc-card p-6 rounded-3xl flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-accent-color/10 rounded-2xl flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-accent-color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold mb-2 text-white">Carboplatina</h3>
+                <p class="text-xs text-text-muted">AUC e Função Renal (Calvert).</p>
+            </div>
+
+            <!-- Card Desconto 5% -->
+            <div onclick="openModal('sobra5')" class="calc-card p-6 rounded-3xl flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-accent-color/10 rounded-2xl flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-accent-color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold mb-2 text-white">Desconto 5%</h3>
+                <p class="text-xs text-text-muted">Economia técnica institucional.</p>
+            </div>
+
+            <!-- Card Reaproveitamento -->
+            <div onclick="openModal('reaproveita')" class="calc-card p-6 rounded-3xl flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-accent-color/10 rounded-2xl flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-accent-color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold mb-2 text-white">Reaproveitamento</h3>
+                <p class="text-xs text-text-muted">Volume para nova dose (Bolsa).</p>
+            </div>
+
+            <!-- Card Concentração (MODIFICADO) -->
+            <div onclick="openModal('concentracao')" class="calc-card p-6 rounded-3xl flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-accent-color/10 rounded-2xl flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-accent-color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold mb-2 text-white">Concentração</h3>
+                <p class="text-xs text-text-muted">Massa/Volume e Regra de Três.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-6 border-t border-border-color text-center text-[10px] text-gray-400">
+      <div class="max-w-6xl mx-auto px-4">
+        <p>Desenvolvido por Assistente Elton Jr | Revisado por Daniel Victor Tenorio Brito</p>
+      </div>
+    </footer>
+
+    <!-- MODAL -->
+    <div id="modalOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4 backdrop-blur-sm">
+        <div id="modalBox" class="bg-secondary-bg w-full max-w-lg rounded-3xl border border-border-color p-8 transform scale-95 opacity-0 transition-all duration-300 max-h-[95vh] overflow-y-auto">
+            
+            <div class="flex justify-between items-center mb-6 sticky top-0 bg-secondary-bg z-10 pb-2 border-b border-white/5">
+                <h2 id="modalTitle" class="text-xl font-bold text-accent-color tracking-tight text-white">Calculadora</h2>
+                <button onclick="closeModal()" class="text-text-muted hover:text-white transition-colors p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- INTERFACE CARBOPLATINA -->
+            <div id="uiCarbo" class="hidden space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Idade (Anos)</label>
+                        <input type="number" id="c_age" class="input-field" oninput="runCalvert()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Peso (Kg)</label>
+                        <input type="number" id="c_weight" class="input-field" oninput="runCalvert()">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Creatinina (mg/dL)</label>
+                    <input type="number" step="0.01" id="c_creatinine" class="input-field" oninput="runCalvert()">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Gênero</label>
+                    <div class="flex space-x-2">
+                        <button onclick="setGender('M')" id="btnM" class="gender-btn">Masculino</button>
+                        <button onclick="setGender('F')" id="btnF" class="gender-btn">Feminino</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">AUC Alvo</label>
+                    <input type="number" id="c_auc" class="input-field" oninput="runCalvert()">
+                </div>
+                <div id="resCarbo" class="result-box hidden">
+                    <div class="flex justify-between items-end border-b border-white/10 pb-2 mb-2">
+                        <span class="text-xs text-text-muted">Dose Final (mg):</span>
+                        <span id="finalDoseCarbo" class="text-3xl font-bold text-accent-color">0 mg</span>
+                    </div>
+                    <p id="calcClcr" class="text-[10px] text-white/60 font-semibold mt-1">ClCr Estimado: -</p>
+                </div>
+            </div>
+
+            <!-- INTERFACE DESCONTO 5% -->
+            <div id="uiSobra" class="hidden space-y-6">
+                <div>
+                    <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Dose do Paciente (mg)</label>
+                    <input type="number" id="dose_full" class="input-field text-xl" oninput="runSobra()">
+                </div>
+                <div id="resSobra" class="result-box hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs text-text-muted font-bold uppercase">Desconto (5%):</span>
+                        <span id="valEconomia" class="text-lg font-bold text-red-400">- 0.000 mg</span>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-white/10 pt-4">
+                        <span class="text-[10px] text-accent-color font-bold uppercase">Dose a Aspirar</span>
+                        <span id="finalDoseSobra" class="text-3xl font-bold text-white tracking-tight">0.000 mg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERFACE REAPROVEITAMENTO -->
+            <div id="uiReaproveita" class="hidden space-y-5">
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Dose Total da Bolsa (mg)</label>
+                        <input type="number" id="r_dose_orig" class="input-field" oninput="runReaproveita()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Volume Total da Bolsa (mL)</label>
+                        <input type="number" id="r_vol_orig" class="input-field" oninput="runReaproveita()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Nova Dose Prescrita (mg)</label>
+                        <input type="number" id="r_dose_nova" class="input-field" oninput="runReaproveita()">
+                    </div>
+                </div>
+                <div id="resReaproveita" class="result-box hidden">
+                    <div class="flex justify-between items-end">
+                        <span class="text-xs text-text-muted font-bold uppercase">Vol. a retirar:</span>
+                        <span id="finalVolReaproveita" class="text-3xl font-bold text-white">0.000 mL</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERFACE CONCENTRAÇÃO SIMPLIFICADA (PEDIDO) -->
+            <div id="uiConcentracao" class="hidden space-y-6">
+                <div class="formula-display text-sm mb-4">
+                    Concentração = Massa (mg) / Volume (mL)
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Massa Total (mg)</label>
+                        <input type="number" id="m_massa" class="input-field" placeholder="Ex: 500" oninput="runConcMassa()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-text-muted uppercase mb-1 block">Volume Total (mL)</label>
+                        <input type="number" id="m_vol" class="input-field" placeholder="Ex: 10" oninput="runConcMassa()">
+                    </div>
+                </div>
+                
+                <div id="resConcMassa" class="result-box hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs text-text-muted uppercase font-bold">Concentração:</span>
+                        <span id="valConcMassa" class="text-2xl font-bold text-accent-color">0 mg/mL</span>
+                    </div>
+                    
+                    <div class="pt-4 border-t border-white/5 space-y-4">
+                        <p class="text-[10px] font-bold text-accent-color uppercase tracking-wider">Regra de Três (Quanto aspirar?)</p>
+                        <div>
+                            <label class="text-[10px] text-text-muted mb-1 block">Dose desejada (mg)</label>
+                            <input type="number" id="m_dose_desejada" class="input-field" placeholder="Ex: 150" oninput="runConcMassa()">
+                        </div>
+                        <div id="resRegraTres" class="flex justify-between items-center hidden">
+                            <span class="text-xs text-text-muted font-bold uppercase">Aspirar:</span>
+                            <span id="valRegraTres" class="text-2xl font-bold text-white">0.0 mL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modalOverlay');
+        const modalBox = document.getElementById('modalBox');
+        let currentGender = 'M';
+
+        function openModal(type) {
+            document.querySelectorAll('#modalBox > div[id^="ui"]').forEach(div => div.classList.add('hidden'));
+            
+            if(type === 'carbo') {
+                document.getElementById('modalTitle').innerText = 'Fórmula de Calvert';
+                document.getElementById('uiCarbo').classList.remove('hidden');
+            } else if(type === 'sobra5') {
+                document.getElementById('modalTitle').innerText = 'Desconto Institucional (5%)';
+                document.getElementById('uiSobra').classList.remove('hidden');
+            } else if(type === 'reaproveita') {
+                document.getElementById('modalTitle').innerText = 'Reaproveitamento';
+                document.getElementById('uiReaproveita').classList.remove('hidden');
+            } else if(type === 'concentracao') {
+                document.getElementById('modalTitle').innerText = 'Massa e Volume';
+                document.getElementById('uiConcentracao').classList.remove('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modalBox.classList.remove('scale-95', 'opacity-0');
+                modalBox.classList.add('scale-100', 'opacity-100');
+            }, 50);
+        }
+
+        function closeModal() {
+            modalBox.classList.remove('scale-100', 'opacity-100');
+            modalBox.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.querySelectorAll('input').forEach(i => i.value = '');
+                document.querySelectorAll('.result-box').forEach(r => r.classList.add('hidden'));
+            }, 200);
+        }
+
+        function setGender(g) {
+            currentGender = g;
+            document.getElementById('btnM').classList.toggle('active', g === 'M');
+            document.getElementById('btnF').classList.toggle('active', g === 'F');
+            runCalvert();
+        }
+
+        function runCalvert() {
+            const age = parseFloat(document.getElementById('c_age').value);
+            const weight = parseFloat(document.getElementById('c_weight').value);
+            const creat = parseFloat(document.getElementById('c_creatinine').value);
+            const auc = parseFloat(document.getElementById('c_auc').value);
+            if (age && weight && creat && auc) {
+                let clcr = ((140 - age) * weight) / (72 * creat);
+                if (currentGender === 'F') clcr *= 0.85;
+                let clcrForCalc = clcr > 125 ? 125 : clcr;
+                const dose = auc * (clcrForCalc + 25);
+                document.getElementById('finalDoseCarbo').innerText = Math.round(dose) + ' mg';
+                document.getElementById('calcClcr').innerText = `ClCr Estimado: ${clcr.toFixed(1)} mL/min (Cap 125)`;
+                document.getElementById('resCarbo').classList.remove('hidden');
+            } else { document.getElementById('resCarbo').classList.add('hidden'); }
+        }
+
+        function runSobra() {
+            const dose = parseFloat(document.getElementById('dose_full').value);
+            if (dose > 0) {
+                const desconto = dose * 0.05;
+                const doseAspirar = dose - desconto;
+                document.getElementById('valEconomia').innerText = '- ' + desconto.toFixed(3) + ' mg';
+                document.getElementById('finalDoseSobra').innerText = doseAspirar.toFixed(3) + ' mg';
+                document.getElementById('resSobra').classList.remove('hidden');
+            } else { document.getElementById('resSobra').classList.add('hidden'); }
+        }
+
+        function runReaproveita() {
+            const dO = parseFloat(document.getElementById('r_dose_orig').value);
+            const vO = parseFloat(document.getElementById('r_vol_orig').value);
+            const dN = parseFloat(document.getElementById('r_dose_nova').value);
+            if (dO > 0 && vO > 0 && dN > 0) {
+                const res = (dN * vO) / dO;
+                document.getElementById('finalVolReaproveita').innerText = res.toFixed(3) + ' mL';
+                document.getElementById('resReaproveita').classList.remove('hidden');
+            } else { document.getElementById('resReaproveita').classList.add('hidden'); }
+        }
+
+        function runConcMassa() {
+            const m = parseFloat(document.getElementById('m_massa').value);
+            const v = parseFloat(document.getElementById('m_vol').value);
+            const desejada = parseFloat(document.getElementById('m_dose_desejada').value);
+            
+            if (m > 0 && v > 0) {
+                const conc = m / v;
+                document.getElementById('valConcMassa').innerText = conc.toFixed(2) + ' mg/mL';
+                document.getElementById('resConcMassa').classList.remove('hidden');
+
+                if (desejada > 0) {
+                    const aspirar = desejada / conc;
+                    document.getElementById('valRegraTres').innerText = aspirar.toFixed(2) + ' mL';
+                    document.getElementById('resRegraTres').classList.remove('hidden');
+                } else {
+                    document.getElementById('resRegraTres').classList.add('hidden');
+                }
+            } else { 
+                document.getElementById('resConcMassa').classList.add('hidden'); 
+            }
+        }
+
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    </script>
+</body>
+</html>
